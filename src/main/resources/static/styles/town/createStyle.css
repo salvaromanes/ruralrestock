@@ -1,0 +1,18 @@
+body {
+    background-image: url("../../images/fondo.jpg");
+    font-size: 20px;
+}
+.table-responsive {
+    padding: 50px;
+    background-color: #F3FFFF;
+    border: 3px solid darkblue;
+    margin-left: 500px;
+    margin-top: 50px;
+    margin-right: 500px;
+    border-radius: 25px;
+    align-items: center;
+    text-align: center;
+}
+.logout {
+    margin-left: 20px;
+}

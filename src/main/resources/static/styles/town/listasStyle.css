@@ -1,0 +1,44 @@
+body {
+    font-family: Arial, sans-serif;
+    font-size: 20px;
+    background-image: url("../../images/fondo.jpg");
+}
+.titulo {
+    font-family: Brush Script MT;
+    text-align: center;
+    color: white;
+    font-weight: bold;
+}
+.table-responsive {
+    margin-top: 50px;
+    margin-left: 50px;
+    margin-right: 50px;
+    margin-bottom: 50px;
+}
+.cuerpoTabla{
+    font-family: Arial, sans-serif;
+    font-size: 30px;
+}
+.logout {
+    color: white;
+    margin-left: 10px;
+}
+.textoInformativo {
+    background-color: #F3FFFF;
+    border: 3px solid darkblue;
+    margin-top: 50px;
+    margin-left: 50px;
+    margin-right: 50px;
+    border-radius: 15px;
+}
+.botonNuevoMunicipio {
+    margin-top: 50px;
+    margin-left: 50px;
+}
+.buscador {
+    margin-bottom: 20px;
+}
+.texto {
+    width: 350px;
+    margin-bottom: 5px;
+}

@@ -1,0 +1,39 @@
+body {
+    font-family: Arial, sans-serif;
+    font-size: 20px;
+    background-image: url("../../images/fondo.jpg");
+}
+.titulo {
+    font-family: Brush Script MT;
+    text-align: center;
+    color: white;
+    font-weight: bold;
+}
+.tipoUsuario {
+    margin-top: 10px;
+    background-color: white;
+    border: 3px solid grey;
+    margin-right: 1250px;
+    border-radius: 10px;
+}
+.table-responsive {
+    margin-top: 50px;
+    margin-left: 50px;
+    margin-right: 50px;
+    margin-bottom: 50px;
+}
+.cuerpoTabla{
+    font-family: Arial, sans-serif;
+    font-size: 30px;
+}
+.logout {
+    color: white;
+    margin-left: 10px;
+}
+.buscador {
+    margin-bottom: 20px;
+}
+.texto {
+    width: 350px;
+    margin-bottom: 5px;
+}
