@@ -1,0 +1,34 @@
+body {
+    background-image: url("../../images/fondo.jpg");
+    font-size: 20px;
+}
+.titulo {
+    font-family: Brush Script MT;
+    text-align: center;
+    color: white;
+    font-weight: bold;
+}
+.table-responsive {
+    margin-top: 50px;
+    margin-left: 50px;
+    margin-right: 50px;
+    margin-bottom: 50px;
+}
+.boton {
+    margin-top: 50px;
+    margin-left: 50px;
+}
+.logout {
+    margin-left: 20px;
+}
+.buscador {
+    margin-bottom: 20px;
+}
+.texto {
+    width: 350px;
+    margin-bottom: 5px;
+}
+.botonNuevoEvento {
+    margin-top: 50px;
+    margin-left: 50px;
+}
