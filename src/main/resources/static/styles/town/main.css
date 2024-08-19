@@ -55,9 +55,7 @@ body {
     text-align: center;
 }
 .boton-ayun {
-    margin-left: 1275px;
-    margin-bottom: 10px;
-    margin-top: 20px;
+    float: right;
 }
 .menu {
     padding: 50px;
