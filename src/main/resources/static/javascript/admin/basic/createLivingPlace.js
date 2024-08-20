@@ -1,5 +1,3 @@
-const baseUrl = "http://localhost:8082";
-
 const crearVivienda = async function (e){
     e.stopPropagation();
     e.preventDefault();
@@ -14,7 +12,7 @@ const crearVivienda = async function (e){
         municipio: document.getElementById('municipio').value
     };
 
-    fetch(baseUrl + "/api/livingPlace/create", {
+    fetch("http://localhost:8080/api/livingPlace/create", {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {

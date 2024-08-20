@@ -1,5 +1,3 @@
-const baseUrl = "http://localhost:8082";
-
 const crearOfertaEmpleo = async function (e){
     e.stopPropagation();
     e.preventDefault();
@@ -12,7 +10,7 @@ const crearOfertaEmpleo = async function (e){
         informacion_extra: document.getElementById('informacion_extra').value
     };
 
-    fetch(baseUrl + "/api/employment/create", {
+    fetch("http://localhost:8080/api/employment/create", {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {

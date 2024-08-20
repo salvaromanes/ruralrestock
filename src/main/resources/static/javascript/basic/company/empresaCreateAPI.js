@@ -1,17 +1,17 @@
-const crearEvento = async function (e){
+const crearEmpresa = async function (e){
     e.stopPropagation();
     e.preventDefault();
 
     const data = {
+        cif: document.getElementById('cif').value,
         nombre: document.getElementById('nombre').value,
-        fecha_inicio: document.getElementById('fecha_inicio').value,
-        fecha_fin: document.getElementById('fecha_fin').value,
-        tipo: document.getElementById('tipo').value,
+        propietario: document.getElementById('propietario').value,
+        direccion: document.getElementById('direccion').value,
         descripcion: document.getElementById('descripcion').value,
         municipio: document.getElementById('municipio').value
     };
 
-    fetch("http://localhost:8080/api/event/create", {
+    fetch("http://localhost:8080/api/company/create", {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
@@ -19,12 +19,12 @@ const crearEvento = async function (e){
         }
     }).then(res => {
         if (res.status == 201) {
-            alert("Evento creado correctamente");
+            alert("Empresa creada correctamente");
         } else {
-            alert("Error al crear el evento");
+            alert("Error al crear la empresa");
         }
     });
 }
 
 const form = document.getElementById("register-form");
-form.addEventListener("submit", crearEvento);
+form.addEventListener("submit", crearEmpresa);
