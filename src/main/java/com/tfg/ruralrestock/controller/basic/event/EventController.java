@@ -87,15 +87,16 @@ public class EventController {
         log.info("Eliminado el evento: " + name);
     }
 
-    @GetMapping("/deleteRequest/{name}")
+    @DeleteMapping("/deleteRequest/{name}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteEventRequest(@PathVariable String name) {
         eventPeticionRepository.findById(name).ifPresent(eventPeticionRepository::delete);
+        log.info("Eliminada la petición del evento: " + name);
     }
 
     @PostMapping("/createFromPeticion/{nombre}")
     @ResponseStatus(HttpStatus.CREATED)
-    public void createEvent(@RequestBody String nombre) {
+    public void createEvent(@PathVariable String nombre) {
         PeticionNewEvent peticionNewEvent = eventPeticionRepository.findById(nombre)
                 .orElseThrow(() -> new RuntimeException("Peticion de evento no encontrado"));
 

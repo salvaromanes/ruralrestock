@@ -20,6 +20,7 @@ const crearEmpresa = async function (e){
     }).then(res => {
         if (res.status == 201) {
             alert("Empresa creada correctamente");
+            window.location.href='listaEmpresas.html';
         } else {
             alert("Error al crear la empresa");
         }
