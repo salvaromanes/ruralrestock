@@ -20,7 +20,7 @@
                 <div class="collapse navbar-collapse" id="navbarScroll">
                     <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
                         <li class="nav-item">
-                            <a class="nav-link" href="">Municipios</a>
+                            <a class="nav-link" href="../municipios/listaMunicipiosAdmin.html">Municipios</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="">Incidencias</a>
@@ -28,37 +28,41 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">Comunicación</a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Foro</a></li>
-                                <li><a class="dropdown-item" href="#">Chats</a></li>
+                                <li><a class="dropdown-item" href="">Foro</a></li>
+                                <li><a class="dropdown-item" href="">Chats</a></li>
                             </ul>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">Trabajo</a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Empresas</a></li>
-                                <li><a class="dropdown-item" href="#">Empleo</a></li>
+                                <li><a class="dropdown-item" href="../basicos/empresas/listaEmpresas.html">Empresas</a></li>
+                                <li><a class="dropdown-item" href="../basicos/empleo/listaPeticionesEmpleo.html">Empleo</a></li>
                             </ul>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="">Eventos</a>
+                            <a class="nav-link" href="../basicos/eventos/listaPeticionesEventos.html">Eventos</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="">Viviendas</a>
+                            <a class="nav-link" href="../basicos/viviendas/listaPeticionesViviendas.html">Viviendas</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#">Usuarios</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle active" role="button" data-bs-toggle="dropdown" aria-expanded="false">Usuarios</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="../usuarios/listaUsuarios.html">Activos</a></li>
+                                <li><a class="dropdown-item active" href="../usuarios/listaUsuariosBloqueados.html">Bloqueados</a></li>
+                                <li><a class="dropdown-item" href="../usuarios/listaUsuariosBaja.html">Dados de baja</a></li>
+                            </ul>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="">Administración</a>
                         </li>
                     </ul>
-                    <div class="login"  id="nombrePersona">
+                    <div class="login" id="nombrePersona">
 
                     </div>
                     <div class="logout" id="logout">
-                        <input type="submit"  onclick="logoutUsuario()" class="btn btn-primary" value="Salir">
+                        <input type="submit" onclick="logoutUsuario()" class="btn btn-primary" value="Salir">
                     </div>
-                </div>
             </div>
         </nav>
 
@@ -73,9 +77,9 @@
                 <div class="tipoUsuario">
                     <a class="nav-link dropdown-toggle active" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="margin-left: 10px;">Tipo de usuario</a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="http://localhost:8080/listaUsuarios.html">Activo</a></li>
+                        <li><a class="dropdown-item" href="listaUsuarios.html">Activo</a></li>
                         <li><a class="dropdown-item active" href="#">Bloqueado</a></li>
-                        <li><a class="dropdown-item" href="http://localhost:8080/listaUsuariosBaja.html">Dado de baja</a></li>
+                        <li><a class="dropdown-item" href="listaUsuariosBaja.html">Dado de baja</a></li>
                     </ul>
                 </div>
             </div>
