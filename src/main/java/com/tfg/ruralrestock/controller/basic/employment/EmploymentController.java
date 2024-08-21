@@ -85,7 +85,7 @@ public class EmploymentController {
 
     @PostMapping("/createFromPeticion/{nombre}")
     @ResponseStatus(HttpStatus.CREATED)
-    public void createEmploymentFromPeticion(@RequestBody String nombre) {
+    public void createEmploymentFromPeticion(@PathVariable String nombre) {
         PeticionEmployment peticionEmployment = employmentPeticionRepository.findById(nombre)
                 .orElseThrow(() -> new RuntimeException("Peticion de empleo no encontrada"));
 
