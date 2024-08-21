@@ -81,7 +81,7 @@ public class LivingPlaceController {
 
     @PostMapping("/createFromPeticion/{direccion}")
     @ResponseStatus(HttpStatus.CREATED)
-    public void createLivingPlaceFromPeticion(@RequestBody String direccion) {
+    public void createLivingPlaceFromPeticion(@PathVariable String direccion) {
         PeticionNewLivingPlace peticionNewLivingPlace = livingPlacePeticionRepository.findById(direccion)
                 .orElseThrow(() -> new RuntimeException("Peticion de oferta de vivienda no encontrada"));
 

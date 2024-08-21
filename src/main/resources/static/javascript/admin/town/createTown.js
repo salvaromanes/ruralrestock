@@ -16,7 +16,7 @@ const crearMunicipio = async function (e){
         }
     }).then(res => {
         if (res.status == 201) {
-            window.location.href='http://localhost:8080/ruralrestock/municipios/listaMunicipiosAdmin.html';
+            window.location.href='listaMunicipiosAdmin.html';
             alert("Municipio creado correctamente");
         } else {
             alert("Algo ha fallado al crear el municipio");
