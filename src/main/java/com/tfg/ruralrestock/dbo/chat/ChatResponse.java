@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -14,5 +16,6 @@ public class ChatResponse {
     private String origen;
     private String destino;
     private String fecha;
-    private String descripcion;
+    private String plazas;
+    private List<String> interesados;
 }

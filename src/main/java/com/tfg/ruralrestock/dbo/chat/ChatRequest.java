@@ -14,5 +14,5 @@ public class ChatRequest {
     private String origen;
     private String destino;
     private String fecha;
-    private String descripcion;
+    private String plazas;
 }

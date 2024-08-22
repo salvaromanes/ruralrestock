@@ -5,12 +5,14 @@ import com.tfg.ruralrestock.dbo.chat.ChatResponse;
 import com.tfg.ruralrestock.model.chat.Chat;
 import com.tfg.ruralrestock.repository.chat.ChatRepository;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -22,8 +24,8 @@ public class ChatController {
 
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
-    public ChatResponse createChat(@RequestBody ChatRequest chatRequest) {
-        String key = chatRequest.getAutor() + chatRequest.getOrigen() + chatRequest.getDestino() + chatRequest.getFecha();
+    public ChatResponse createChat(@RequestBody ChatRequest chatRequest, HttpSession session) {
+        String key = ((String) session.getAttribute("name")) + chatRequest.getOrigen() + chatRequest.getDestino() + chatRequest.getFecha();
 
         Chat chatFound = chatRepository.findById(key)
                 .orElse(null);
@@ -31,11 +33,12 @@ public class ChatController {
         if (chatFound == null) {
             Chat chat = Chat.builder()
                     .clave(key)
-                    .autor(chatRequest.getAutor())
+                    .autor(((String) session.getAttribute("name")))
                     .origen(chatRequest.getOrigen())
                     .destino(chatRequest.getDestino())
                     .fecha(chatRequest.getFecha())
-                    .descripcion(chatRequest.getDescripcion())
+                    .plazas(chatRequest.getPlazas())
+                    .interesados(new ArrayList<>())
                     .build();
 
             chatRepository.insert(chat);
@@ -52,6 +55,58 @@ public class ChatController {
     public List<ChatResponse> getAllChats() {
         List<Chat> chats = chatRepository.findAll();
         return chats.stream().map(this::mapToChatResponse).toList();
+    }
+
+    @PostMapping("/estoyInteresado")
+    @ResponseStatus(HttpStatus.OK)
+    public String interesado(@RequestBody Chat chat, HttpSession session) {
+        String key = chat.getAutor() + chat.getOrigen() + chat.getDestino() + chat.getFecha();
+
+        Chat chatFound = chatRepository.findById(key).orElseThrow(() -> new RuntimeException("Chat no encontrado"));
+
+        if (chatFound.getInteresados().contains((String) session.getAttribute("username"))) {
+            updateMoreSeats(key, session);
+            return "Plazas incrementadas";
+        } else {
+            updateLessSeats(key, session);
+            return "Plazas decrementadas";
+        }
+    }
+
+    @PutMapping("/updateLess/{clave}")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateLessSeats(@PathVariable String clave, HttpSession session) {
+        Chat chatFound = chatRepository.findById(clave)
+                .orElseThrow(() -> new RuntimeException("Chat no encontrado"));
+
+        if (Integer.parseInt(chatFound.getPlazas()) == 0) {
+            throw new RuntimeException("Error: No hay plazas suficientes en este viaje");
+        }
+
+        chatFound.setPlazas(String.valueOf(Integer.parseInt(chatFound.getPlazas()) - 1));
+        List<String> interesados = chatFound.getInteresados();
+        String persona = (String) session.getAttribute("username");
+        interesados.add(persona);
+        chatFound.setInteresados(interesados);
+
+        chatRepository.save(chatFound);
+        log.info("Plazas del chat decrementadas correctamente");
+    }
+
+    @PutMapping("/updateMore/{clave}")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateMoreSeats(@PathVariable String clave, HttpSession session) {
+        Chat chatFound = chatRepository.findById(clave)
+                .orElseThrow(() -> new RuntimeException("Chat no encontrado"));
+
+        chatFound.setPlazas(String.valueOf(Integer.parseInt(chatFound.getPlazas()) + 1));
+        List<String> interesados = chatFound.getInteresados();
+        String persona = (String) session.getAttribute("username");
+        interesados.remove(persona);
+        chatFound.setInteresados(interesados);
+
+        chatRepository.save(chatFound);
+        log.info("Plazas del chat incrementadas correctamente");
     }
 
     @DeleteMapping("/delete/{autor}")
@@ -72,7 +127,8 @@ public class ChatController {
                 .origen(chat.getOrigen())
                 .destino(chat.getDestino())
                 .fecha(chat.getFecha())
-                .descripcion(chat.getDescripcion())
+                .plazas(chat.getPlazas())
+                .interesados(chat.getInteresados())
                 .build();
     }
 }

@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 @Document(value = "chat")
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,5 +22,6 @@ public class Chat {
     private String origen;
     private String destino;
     private String fecha;
-    private String descripcion;
+    private String plazas;
+    private List<String> interesados;
 }
