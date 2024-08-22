@@ -30,7 +30,7 @@ public class CommentController {
         if (commentFound == null) {
             Comment comment = Comment.builder()
                     .tema(commentRequest.getTema())
-                    .autor((String) session.getAttribute("name"))
+                    .autor((String) session.getAttribute("username"))
                     .descripcion(commentRequest.getDescripcion())
                     .build();
 

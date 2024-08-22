@@ -33,7 +33,7 @@ public class ChatController {
         if (chatFound == null) {
             Chat chat = Chat.builder()
                     .clave(key)
-                    .autor(((String) session.getAttribute("name")))
+                    .autor(((String) session.getAttribute("username")))
                     .origen(chatRequest.getOrigen())
                     .destino(chatRequest.getDestino())
                     .fecha(chatRequest.getFecha())
