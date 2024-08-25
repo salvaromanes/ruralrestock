@@ -54,7 +54,7 @@ public class LoginController {
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpSession session) {
         User user = userRepository.findByEmail(loginRequest.getEmail()).orElse(null);
 
-        if (user != null && user.getPassword().equals(loginRequest.getPassword())) {
+        if (user != null && user.getPassword().equals(loginRequest.getPassword()) && !user.getBloqueado()) {
             session.setAttribute("name", user.getNombre());
             session.setAttribute("username", loginRequest.getEmail());
             session.setAttribute("role", user.getRol());
