@@ -49,18 +49,22 @@ public class EmploymentController {
     @PostMapping("/createRequest")
     @ResponseStatus(HttpStatus.CREATED)
     public PeticionEmployment createEmploymentRequest(@RequestBody EmploymentRequest employmentRequest) {
-        PeticionEmployment employment = PeticionEmployment.builder()
-                .nombre(employmentRequest.getNombre())
-                .requisitos(employmentRequest.getRequisitos())
-                .descripcion(employmentRequest.getDescripcion())
-                .informacion_extra(employmentRequest.getInformacion_extra())
-                .empresa_ofertante(employmentRequest.getEmpresa_ofertante())
-                .empresa_ofertante(employmentRequest.getUrl())
-                .build();
+        if (companyRepository.findByName(employmentRequest.getEmpresa_ofertante()).isPresent()) {
+            PeticionEmployment employment = PeticionEmployment.builder()
+                    .nombre(employmentRequest.getNombre())
+                    .requisitos(employmentRequest.getRequisitos())
+                    .descripcion(employmentRequest.getDescripcion())
+                    .informacion_extra(employmentRequest.getInformacion_extra())
+                    .empresa_ofertante(employmentRequest.getEmpresa_ofertante())
+                    .empresa_ofertante(employmentRequest.getUrl())
+                    .build();
 
-        employmentPeticionRepository.insert(employment);
-        log.info("Peticion de oferta de empleo " + employment.getNombre() + " creada con exito");
-        return employment;
+            employmentPeticionRepository.insert(employment);
+            log.info("Peticion de oferta de empleo " + employment.getNombre() + " creada con exito");
+            return employment;
+        } else {
+            throw new RuntimeException("Empresa no existente");
+        }
     }
 
     @GetMapping("/getAll")

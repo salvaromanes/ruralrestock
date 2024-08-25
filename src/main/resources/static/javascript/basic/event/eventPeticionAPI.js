@@ -18,8 +18,8 @@ function imprimirEventos(){
 function mapearEvento(event){
     return `<tr>
         <td>${event.nombre}</td>
-        <td>${event.fecha_inicio}</td>
-        <td>${event.fecha_fin}</td>
+        <td>${event.fechaInicio}</td>
+        <td>${event.fechaFin}</td>
         <td>${event.tipo}</td>
         <td>${event.descripcion}</td>
         <td>${event.municipio}</td>

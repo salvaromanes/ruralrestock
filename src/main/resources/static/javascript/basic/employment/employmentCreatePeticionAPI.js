@@ -19,7 +19,7 @@ const crearSugerenciaEmpleo = async function (e1){
         }
     }).then(res => {
         if (res.status == 201) {
-            window.location.href='http://localhost:8082/listaEmpleoLogin.html';
+            window.location.href='listaEmpleoLogin.html';
             alert("Petición de empleo creada correctamente");
         } else {
             alert("Error al crear la peticion");

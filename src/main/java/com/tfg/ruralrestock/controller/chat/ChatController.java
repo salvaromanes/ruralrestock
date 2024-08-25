@@ -25,7 +25,7 @@ public class ChatController {
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
     public ChatResponse createChat(@RequestBody ChatRequest chatRequest, HttpSession session) {
-        String key = ((String) session.getAttribute("name")) + chatRequest.getOrigen() + chatRequest.getDestino() + chatRequest.getFecha();
+        String key = ((String) session.getAttribute("username")) + chatRequest.getOrigen() + chatRequest.getDestino() + chatRequest.getFecha();
 
         Chat chatFound = chatRepository.findById(key)
                 .orElse(null);
