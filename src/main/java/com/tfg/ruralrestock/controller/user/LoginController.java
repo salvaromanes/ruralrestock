@@ -11,11 +11,15 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.charset.StandardCharsets;
+
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @RestController
@@ -155,6 +159,43 @@ public class LoginController {
     public void deleteUser(@PathVariable String dni){
         userRepository.deleteById(dni);
         log.info("Usuario con dni {} borrado correctamente", dni);
+    }
+
+    @GetMapping("/download/csv")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<byte[]> downloadCSV() {
+        StringBuilder csvBuilder = new StringBuilder();
+
+        csvBuilder.append("DNI, Nombre, Apellidos, Email, Municipio\n");
+
+        List<UserResponse> activos = getAllActiveUser();
+        List<UserResponse> bloqueados = getAllBlockUser();
+        List<UserResponse> baja = getAllDownUser();
+
+        List<UserResponse> usuarios = new ArrayList<>();
+
+        usuarios.addAll(activos);
+        usuarios.addAll(bloqueados);
+        usuarios.addAll(baja);
+
+        Iterator<UserResponse> iterator = usuarios.iterator();;
+
+        while (iterator.hasNext()) {
+            UserResponse userResponse = iterator.next();
+
+            csvBuilder.append(String.join(",",
+                            userResponse.getNombre(),
+                            userResponse.getApellidos(),
+                            userResponse.getEmail(),
+                            userResponse.getMunicipio()))
+                    .append("\n");
+        }
+
+        byte[] csvBytes = csvBuilder.toString().getBytes(StandardCharsets.UTF_8);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=usuarios.csv");
+
+        return new ResponseEntity<>(csvBytes, headers, HttpStatus.OK);
     }
 
     private UserResponse mapToUserResponse(User user) {
