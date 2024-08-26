@@ -24,7 +24,6 @@ function mapearUsuario(usuario){
             <td>${usuario.apellidos}</td>
             <td>${usuario.email}</td>
             <td>${usuario.municipio}</td>
-            <td>${usuario.bloqueado}</td>
             <td>
             <button type="button" class="btn btn-primary">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill-exclamation" viewBox="0 0 16 16">

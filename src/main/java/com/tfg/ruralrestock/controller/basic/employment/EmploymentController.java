@@ -50,13 +50,17 @@ public class EmploymentController {
     @ResponseStatus(HttpStatus.CREATED)
     public PeticionEmployment createEmploymentRequest(@RequestBody EmploymentRequest employmentRequest) {
         if (companyRepository.findByName(employmentRequest.getEmpresa_ofertante()).isPresent()) {
+            if (employmentRequest.getUrl().isEmpty()) {
+                employmentRequest.setUrl("#");
+            }
+
             PeticionEmployment employment = PeticionEmployment.builder()
                     .nombre(employmentRequest.getNombre())
                     .requisitos(employmentRequest.getRequisitos())
                     .descripcion(employmentRequest.getDescripcion())
                     .informacion_extra(employmentRequest.getInformacion_extra())
                     .empresa_ofertante(employmentRequest.getEmpresa_ofertante())
-                    .empresa_ofertante(employmentRequest.getUrl())
+                    .url(employmentRequest.getUrl())
                     .build();
 
             employmentPeticionRepository.insert(employment);
