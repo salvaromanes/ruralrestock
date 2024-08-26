@@ -51,9 +51,10 @@ public class CommentController {
     }
 
     @DeleteMapping("/delete/{tema}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     public void deleteCommentByTema(@PathVariable String tema){
-        commentRepository.deleteById(tema);
+        Comment comment = commentRepository.findById(tema).orElseThrow(() -> new RuntimeException("Comentario no encontrado"+commentRepository.findAll().toString()));
+        commentRepository.delete(comment);
         log.info("Comentario con tema {} eliminado correctamente", tema);
     }
 
