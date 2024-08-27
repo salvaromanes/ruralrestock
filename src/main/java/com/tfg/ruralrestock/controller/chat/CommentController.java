@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -52,6 +53,20 @@ public class CommentController {
     @ResponseStatus(HttpStatus.OK)
     public List<CommentResponse> getAllComments() {
         List<Comment> comments = commentRepository.findAll();
+        return comments.stream().map(this::mapToCommentResponse).toList();
+    }
+
+    @GetMapping("/getMisComentarios/{autor}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<CommentResponse> getMisComentarios(@PathVariable String autor) {
+        List<Comment> comments = new ArrayList<>();
+
+        for (Comment comment:commentRepository.findAll()) {
+            if (comment.getAutor().equals(autor)) {
+                comments.add(comment);
+            }
+        }
+
         return comments.stream().map(this::mapToCommentResponse).toList();
     }
 

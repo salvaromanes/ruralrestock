@@ -92,6 +92,17 @@ public class LoginController {
         }
     }
 
+    @GetMapping("/protected-email")
+    public ResponseEntity<String> getProtectedEmail(HttpSession session) {
+        String name = (String) session.getAttribute("username");
+
+        if (name == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No hay sesión");
+        } else {
+            return ResponseEntity.ok().body(name);
+        }
+    }
+
     @GetMapping("/getAllActive")
     @ResponseStatus(HttpStatus.OK)
     public List<UserResponse> getAllActiveUser() {

@@ -2,8 +2,10 @@ package com.tfg.ruralrestock.controller.chat;
 
 import com.tfg.ruralrestock.dbo.chat.ChatRequest;
 import com.tfg.ruralrestock.dbo.chat.ChatResponse;
+import com.tfg.ruralrestock.dbo.chat.CommentResponse;
 import com.tfg.ruralrestock.dbo.town.TownResponse;
 import com.tfg.ruralrestock.model.chat.Chat;
+import com.tfg.ruralrestock.model.chat.Comment;
 import com.tfg.ruralrestock.repository.chat.ChatRepository;
 
 import jakarta.servlet.http.HttpSession;
@@ -124,6 +126,20 @@ public class ChatController {
                 log.info("Chat {} eliminado correctamente", chat.getClave());
             }
         }
+    }
+
+    @GetMapping("/getMisChats/{autor}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ChatResponse> getMisComentarios(@PathVariable String autor) {
+        List<Chat> chats = new ArrayList<>();
+
+        for (Chat chat:chatRepository.findAll()) {
+            if (chat.getAutor().equals(autor)) {
+                chats.add(chat);
+            }
+        }
+
+        return chats.stream().map(this::mapToChatResponse).toList();
     }
 
     @GetMapping("/download/csv")
