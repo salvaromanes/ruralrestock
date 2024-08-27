@@ -2,6 +2,7 @@ package com.tfg.ruralrestock.controller.basic.livingPlace;
 
 import com.tfg.ruralrestock.dbo.basic.livingPlace.LivingPlaceRequest;
 import com.tfg.ruralrestock.dbo.basic.livingPlace.LivingPlaceResponse;
+import com.tfg.ruralrestock.dbo.chat.ChatResponse;
 import com.tfg.ruralrestock.model.basic.livingPlace.LivingPlace;
 import com.tfg.ruralrestock.model.basic.livingPlace.PeticionNewLivingPlace;
 import com.tfg.ruralrestock.repository.basic.livingPlace.LivingPlaceRepository;
@@ -10,9 +11,13 @@ import com.tfg.ruralrestock.repository.basic.livingPlace.LivingPlacePeticionRepo
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Iterator;
 import java.util.List;
 
 @RestController
@@ -99,6 +104,37 @@ public class LivingPlaceController {
         livingPlacePeticionRepository.deleteById(direccion);
 
         log.info("Oferta de vivienda creada con exito");
+    }
+
+    @GetMapping("/download/csv")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<byte[]> downloadCSV() {
+        StringBuilder csvBuilder = new StringBuilder();
+
+        csvBuilder.append("Direccion, Propietario, Tipo, Precio, Contacto, Municipio\n");
+
+        List<LivingPlaceResponse> viviendas = getAllLivingPlaces();
+
+        Iterator<LivingPlaceResponse> iterator = viviendas.iterator();;
+
+        while (iterator.hasNext()) {
+            LivingPlaceResponse livingPlaceResponse = iterator.next();
+
+            csvBuilder.append(String.join(", ",
+                            livingPlaceResponse.getDireccion(),
+                            livingPlaceResponse.getPropietario(),
+                            livingPlaceResponse.getTipo(),
+                            livingPlaceResponse.getPrecio().toString(),
+                            livingPlaceResponse.getContacto(),
+                            livingPlaceResponse.getMunicipio()))
+                    .append("\n");
+        }
+
+        byte[] csvBytes = csvBuilder.toString().getBytes(StandardCharsets.UTF_8);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=viviendas.csv");
+
+        return new ResponseEntity<>(csvBytes, headers, HttpStatus.OK);
     }
 
     private LivingPlaceResponse mapToLivingPlaceResponse(LivingPlace livingPlace) {

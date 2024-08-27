@@ -2,15 +2,20 @@ package com.tfg.ruralrestock.controller.basic.company;
 
 import com.tfg.ruralrestock.dbo.basic.company.CompanyRequest;
 import com.tfg.ruralrestock.dbo.basic.company.CompanyResponse;
+import com.tfg.ruralrestock.dbo.chat.ChatResponse;
 import com.tfg.ruralrestock.model.basic.company.Company;
 import com.tfg.ruralrestock.repository.basic.company.CompanyRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Iterator;
 import java.util.List;
 
 @RestController
@@ -49,6 +54,35 @@ public class CompanyController {
     public void deleteEvent(@PathVariable String cif) {
         companyRepository.deleteById(cif);
         log.info("Eliminada la empresa con cif " + cif);
+    }
+
+    @GetMapping("/download/csv")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<byte[]> downloadCSV() {
+        StringBuilder csvBuilder = new StringBuilder();
+
+        csvBuilder.append("CIF, Nombre, Propietario, Municipio\n");
+
+        List<CompanyResponse> empresas = getAllCompanies();
+
+        Iterator<CompanyResponse> iterator = empresas.iterator();;
+
+        while (iterator.hasNext()) {
+            CompanyResponse companyResponse = iterator.next();
+
+            csvBuilder.append(String.join(", ",
+                            companyResponse.getCif(),
+                            companyResponse.getNombre(),
+                            companyResponse.getPropietario(),
+                            companyResponse.getMunicipio()))
+                    .append("\n");
+        }
+
+        byte[] csvBytes = csvBuilder.toString().getBytes(StandardCharsets.UTF_8);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=empresas.csv");
+
+        return new ResponseEntity<>(csvBytes, headers, HttpStatus.OK);
     }
 
     private CompanyResponse mapToCompanyResponse(Company company) {

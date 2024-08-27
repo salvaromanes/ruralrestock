@@ -3,6 +3,7 @@ package com.tfg.ruralrestock.controller.basic.event;
 import com.tfg.ruralrestock.dbo.basic.event.EventPeticion;
 import com.tfg.ruralrestock.dbo.basic.event.EventRequest;
 import com.tfg.ruralrestock.dbo.basic.event.EventResponse;
+import com.tfg.ruralrestock.dbo.chat.ChatResponse;
 import com.tfg.ruralrestock.model.basic.event.Event;
 import com.tfg.ruralrestock.model.basic.event.PeticionNewEvent;
 import com.tfg.ruralrestock.repository.basic.event.EventRepository;
@@ -11,12 +12,16 @@ import com.tfg.ruralrestock.repository.basic.event.EventPeticionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 @RestController
@@ -113,6 +118,36 @@ public class EventController {
         eventPeticionRepository.deleteById(nombre);
 
         log.info("Evento creado con exito");
+    }
+
+    @GetMapping("/download/csv")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<byte[]> downloadCSV() {
+        StringBuilder csvBuilder = new StringBuilder();
+
+        csvBuilder.append("Nombre, Fecha de inicio, Fecha de fin, Tipo, Municipio\n");
+
+        List<EventResponse> eventos = getAllEvents();
+
+        Iterator<EventResponse> iterator = eventos.iterator();;
+
+        while (iterator.hasNext()) {
+            EventResponse eventResponse = iterator.next();
+
+            csvBuilder.append(String.join(", ",
+                            eventResponse.getNombre(),
+                            eventResponse.getFecha_inicio(),
+                            eventResponse.getFecha_fin(),
+                            eventResponse.getTipo(),
+                            eventResponse.getMunicipio()))
+                    .append("\n");
+        }
+
+        byte[] csvBytes = csvBuilder.toString().getBytes(StandardCharsets.UTF_8);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=eventos.csv");
+
+        return new ResponseEntity<>(csvBytes, headers, HttpStatus.OK);
     }
 
     private EventResponse mapToEventResponse(Event event) {

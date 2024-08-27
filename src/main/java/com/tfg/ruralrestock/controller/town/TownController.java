@@ -1,5 +1,6 @@
 package com.tfg.ruralrestock.controller.town;
 
+import com.tfg.ruralrestock.dbo.user.UserResponse;
 import com.tfg.ruralrestock.repository.town.TownRepository;
 import com.tfg.ruralrestock.dbo.town.TownResponse;
 import com.tfg.ruralrestock.dbo.town.TownRequest;
@@ -9,9 +10,14 @@ import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @RestController
@@ -63,6 +69,33 @@ public class TownController {
     public void deleteTown(@PathVariable String nombre){
         townRepository.deleteById(nombre);
         log.info("Municipio {} eliminado correctamente", nombre);
+    }
+
+    @GetMapping("/download/csv")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<byte[]> downloadCSV() {
+        StringBuilder csvBuilder = new StringBuilder();
+
+        csvBuilder.append("Nombre, Ubicación\n");
+
+        List<TownResponse> municipios = getAllTown();
+
+        Iterator<TownResponse> iterator = municipios.iterator();;
+
+        while (iterator.hasNext()) {
+            TownResponse townResponse = iterator.next();
+
+            csvBuilder.append(String.join(", ",
+                            townResponse.getNombre(),
+                            townResponse.getUbicacion()))
+                    .append("\n");
+        }
+
+        byte[] csvBytes = csvBuilder.toString().getBytes(StandardCharsets.UTF_8);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=municipios.csv");
+
+        return new ResponseEntity<>(csvBytes, headers, HttpStatus.OK);
     }
 
     private TownResponse mapToTownResponse(Town town) {

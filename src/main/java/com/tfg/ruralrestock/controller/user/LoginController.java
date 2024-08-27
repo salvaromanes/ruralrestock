@@ -166,7 +166,7 @@ public class LoginController {
     public ResponseEntity<byte[]> downloadCSV() {
         StringBuilder csvBuilder = new StringBuilder();
 
-        csvBuilder.append("DNI, Nombre, Apellidos, Email, Municipio\n");
+        csvBuilder.append("DNI, Nombre, Apellidos, Email, Municipio, Bloqueado, Dado de baja\n");
 
         List<UserResponse> activos = getAllActiveUser();
         List<UserResponse> bloqueados = getAllBlockUser();
@@ -183,11 +183,13 @@ public class LoginController {
         while (iterator.hasNext()) {
             UserResponse userResponse = iterator.next();
 
-            csvBuilder.append(String.join(",",
+            csvBuilder.append(String.join(", ",
                             userResponse.getNombre(),
                             userResponse.getApellidos(),
                             userResponse.getEmail(),
-                            userResponse.getMunicipio()))
+                            userResponse.getMunicipio(),
+                            userResponse.getBloqueado().toString(),
+                            userResponse.getDadoBaja().toString()))
                     .append("\n");
         }
 
@@ -208,6 +210,7 @@ public class LoginController {
                 .password(user.getPassword())
                 .municipio(user.getMunicipio())
                 .bloqueado(user.getBloqueado())
+                .dadoBaja(user.getDadoBaja())
                 .build();
     }
 }

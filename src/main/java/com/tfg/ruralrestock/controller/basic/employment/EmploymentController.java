@@ -2,6 +2,7 @@ package com.tfg.ruralrestock.controller.basic.employment;
 
 import com.tfg.ruralrestock.dbo.basic.employment.EmploymentRequest;
 import com.tfg.ruralrestock.dbo.basic.employment.EmploymentResponse;
+import com.tfg.ruralrestock.dbo.chat.ChatResponse;
 import com.tfg.ruralrestock.model.basic.employment.Employment;
 import com.tfg.ruralrestock.model.basic.employment.PeticionEmployment;
 import com.tfg.ruralrestock.repository.basic.company.CompanyRepository;
@@ -11,9 +12,13 @@ import com.tfg.ruralrestock.repository.basic.employment.EmploymentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Iterator;
 import java.util.List;
 
 @RestController
@@ -109,6 +114,33 @@ public class EmploymentController {
         employmentRepository.insert(employment);
         employmentPeticionRepository.deleteById(nombre);
         log.info("Oferta de empleo " + employment.getNombre() + " creada con exito");
+    }
+
+    @GetMapping("/download/csv")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<byte[]> downloadCSV() {
+        StringBuilder csvBuilder = new StringBuilder();
+
+        csvBuilder.append("Nombre, Empresa ofertante\n");
+
+        List<EmploymentResponse> empleos = getAllEmployment();
+
+        Iterator<EmploymentResponse> iterator = empleos.iterator();;
+
+        while (iterator.hasNext()) {
+            EmploymentResponse employmentResponse = iterator.next();
+
+            csvBuilder.append(String.join(", ",
+                            employmentResponse.getNombre(),
+                            employmentResponse.getEmpresa_ofertante()))
+                    .append("\n");
+        }
+
+        byte[] csvBytes = csvBuilder.toString().getBytes(StandardCharsets.UTF_8);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=empleos.csv");
+
+        return new ResponseEntity<>(csvBytes, headers, HttpStatus.OK);
     }
 
     private EmploymentResponse mapToEmploymentRespone(Employment employment) {

@@ -2,6 +2,7 @@ package com.tfg.ruralrestock.controller.chat;
 
 import com.tfg.ruralrestock.dbo.chat.ChatRequest;
 import com.tfg.ruralrestock.dbo.chat.ChatResponse;
+import com.tfg.ruralrestock.dbo.town.TownResponse;
 import com.tfg.ruralrestock.model.chat.Chat;
 import com.tfg.ruralrestock.repository.chat.ChatRepository;
 
@@ -9,10 +10,14 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @RestController
@@ -119,6 +124,36 @@ public class ChatController {
                 log.info("Chat {} eliminado correctamente", chat.getClave());
             }
         }
+    }
+
+    @GetMapping("/download/csv")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<byte[]> downloadCSV() {
+        StringBuilder csvBuilder = new StringBuilder();
+
+        csvBuilder.append("Autor, Origen, Destino, Fecha, Interesados\n");
+
+        List<ChatResponse> chats = getAllChats();
+
+        Iterator<ChatResponse> iterator = chats.iterator();;
+
+        while (iterator.hasNext()) {
+            ChatResponse chatResponse = iterator.next();
+
+            csvBuilder.append(String.join(", ",
+                            chatResponse.getAutor(),
+                            chatResponse.getOrigen(),
+                            chatResponse.getDestino(),
+                            chatResponse.getFecha(),
+                            chatResponse.getInteresados().toString()))
+                    .append("\n");
+        }
+
+        byte[] csvBytes = csvBuilder.toString().getBytes(StandardCharsets.UTF_8);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=chats.csv");
+
+        return new ResponseEntity<>(csvBytes, headers, HttpStatus.OK);
     }
 
     private ChatResponse mapToChatResponse(Chat chat) {

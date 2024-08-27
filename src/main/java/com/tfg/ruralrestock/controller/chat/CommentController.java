@@ -2,6 +2,7 @@ package com.tfg.ruralrestock.controller.chat;
 
 import com.tfg.ruralrestock.dbo.chat.CommentRequest;
 import com.tfg.ruralrestock.dbo.chat.CommentResponse;
+import com.tfg.ruralrestock.dbo.town.TownResponse;
 import com.tfg.ruralrestock.model.chat.Comment;
 import com.tfg.ruralrestock.repository.chat.CommentRepository;
 
@@ -9,9 +10,13 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Iterator;
 import java.util.List;
 
 @RestController
@@ -56,6 +61,34 @@ public class CommentController {
         Comment comment = commentRepository.findById(tema).orElseThrow(() -> new RuntimeException("Comentario no encontrado"+commentRepository.findAll().toString()));
         commentRepository.delete(comment);
         log.info("Comentario con tema {} eliminado correctamente", tema);
+    }
+
+    @GetMapping("/download/csv")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<byte[]> downloadCSV() {
+        StringBuilder csvBuilder = new StringBuilder();
+
+        csvBuilder.append("Tema, Autor, Descripción\n");
+
+        List<CommentResponse> comentarios = getAllComments();
+
+        Iterator<CommentResponse> iterator = comentarios.iterator();;
+
+        while (iterator.hasNext()) {
+            CommentResponse commentResponse = iterator.next();
+
+            csvBuilder.append(String.join(", ",
+                            commentResponse.getTema(),
+                            commentResponse.getAutor(),
+                            commentResponse.getDescripcion()))
+                    .append("\n");
+        }
+
+        byte[] csvBytes = csvBuilder.toString().getBytes(StandardCharsets.UTF_8);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=comentarios.csv");
+
+        return new ResponseEntity<>(csvBytes, headers, HttpStatus.OK);
     }
 
     private CommentResponse mapToCommentResponse(Comment comment) {
