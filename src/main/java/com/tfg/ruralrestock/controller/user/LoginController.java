@@ -58,7 +58,7 @@ public class LoginController {
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpSession session) {
         User user = userRepository.findByEmail(loginRequest.getEmail()).orElse(null);
 
-        if (user != null && user.getPassword().equals(loginRequest.getPassword()) && !user.getBloqueado()) {
+        if (user != null && user.getPassword().equals(loginRequest.getPassword()) && !user.getBloqueado() && !user.getDadoBaja()) {
             session.setAttribute("name", user.getNombre());
             session.setAttribute("username", loginRequest.getEmail());
             session.setAttribute("role", user.getRol());
@@ -148,6 +148,25 @@ public class LoginController {
         return removes.stream().map(this::mapToUserResponse).toList();
     }
 
+    @GetMapping("/getMisDatos/{username}")
+    @ResponseStatus(HttpStatus.OK)
+    public User getMisDatos(@PathVariable String username) {
+        return userRepository.findByEmail(username).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+    }
+
+    @PostMapping("/update")
+    @ResponseStatus(HttpStatus.OK)
+    public UserResponse update(@RequestBody UserRequest userRequest, HttpSession httpSession) {
+        String username = (String) httpSession.getAttribute("username");
+        User user = userRepository.findByEmail(username).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        user.setMunicipio(userRequest.getMunicipio());
+        user.setPassword(userRequest.getPassword());
+
+        userRepository.save(user);
+        return mapToUserResponse(user);
+    }
+
     @GetMapping("/blockUser/{dni}")
     @ResponseStatus(HttpStatus.OK)
     public void blockUser(@PathVariable String dni){
@@ -161,6 +180,17 @@ public class LoginController {
             user.setBloqueado(Boolean.TRUE);
             log.info("Usuario {} bloqueado correctamente", user.getEmail());
         }
+
+        userRepository.save(user);
+    }
+
+    @GetMapping("/darseBaja")
+    @ResponseStatus(HttpStatus.OK)
+    public void baja(HttpSession httpSession){
+        String username = (String) httpSession.getAttribute("username");
+        User user = userRepository.findByEmail(username).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        user.setDadoBaja(Boolean.TRUE);
 
         userRepository.save(user);
     }
