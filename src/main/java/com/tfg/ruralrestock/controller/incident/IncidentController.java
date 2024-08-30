@@ -65,22 +65,152 @@ public class IncidentController {
             throw new RuntimeException("El incidente no se puede crear");
     }
 
-    @PutMapping("/updateStatus")
+    @GetMapping("/updateStatus/{clave}")
     @ResponseStatus(HttpStatus.OK)
-    public void updateIncidentStatus(@RequestBody Incident incident){
-        Incident incidentFound = incidentRepository.findById(incident.getClave())
+    public void updateIncidentStatus(@PathVariable String clave){
+        Incident incidentFound = incidentRepository.findById(clave)
                 .orElseThrow(() -> new RuntimeException("Incidente no encontrado"));
 
-        incidentFound.setEstado(incident.getEstado());
+        if (incidentFound.getEstado().equals("Pendiente")) {
+            incidentFound.setEstado("Activo");
+        } else {
+            incidentFound.setEstado("Cerrado");
+        }
 
         incidentRepository.save(incidentFound);
-        log.info("Estado del incidente {} actualizado correctamente", incident.getTitulo());
+        log.info("Estado del incidente {} actualizado correctamente", incidentFound.getTitulo());
     }
 
     @GetMapping("/getAll")
     @ResponseStatus(HttpStatus.OK)
     public List<Incident> getAllIncidents() {
         return incidentRepository.findAll();
+    }
+
+    @GetMapping("/getAllActiveAdmin")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Incident> getAllActiveAdmin() {
+        List<Incident> incidents = new ArrayList<>();
+
+        for (Incident i:getAllIncidents()) {
+            if (i.getEstado().equals("Activo") && i.getReceptor().equals("administrador")) {
+                incidents.add(i);
+            }
+        }
+
+        return incidents;
+    }
+
+    @GetMapping("/getAllStopAdmin")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Incident> getAllStopAdmin() {
+        List<Incident> incidents = new ArrayList<>();
+
+        for (Incident i:getAllIncidents()) {
+            if (i.getEstado().equals("Pendiente") && i.getReceptor().equals("administrador")) {
+                incidents.add(i);
+            }
+        }
+
+        return incidents;
+    }
+
+    @GetMapping("/getAllCloseAdmin")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Incident> getAllCloseAdmin() {
+        List<Incident> incidents = new ArrayList<>();
+
+        for (Incident i:getAllIncidents()) {
+            if (i.getEstado().equals("Cerrado") && i.getReceptor().equals("administrador")) {
+                incidents.add(i);
+            }
+        }
+
+        return incidents;
+    }
+
+    @GetMapping("/getAllActiveTecnico")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Incident> getAllActiveTecnico() {
+        List<Incident> incidents = new ArrayList<>();
+
+        for (Incident i:getAllIncidents()) {
+            if (i.getEstado().equals("Activo") && i.getReceptor().equals("tecnico_ayuntamiento")) {
+                incidents.add(i);
+            }
+        }
+
+        return incidents;
+    }
+
+    @GetMapping("/getAllStopTecnico")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Incident> getAllStopTecnico() {
+        List<Incident> incidents = new ArrayList<>();
+
+        for (Incident i:getAllIncidents()) {
+            if (i.getEstado().equals("Pendiente") && i.getReceptor().equals("tecnico_ayuntamiento")) {
+                incidents.add(i);
+            }
+        }
+
+        return incidents;
+    }
+
+    @GetMapping("/getAllCloseTecnico")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Incident> getAllCloseTecnico() {
+        List<Incident> incidents = new ArrayList<>();
+
+        for (Incident i:getAllIncidents()) {
+            if (i.getEstado().equals("Cerrado") && i.getReceptor().equals("tecnico_ayuntamiento")) {
+                incidents.add(i);
+            }
+        }
+
+        return incidents;
+    }
+
+    @GetMapping("/getAllActiveAutorizado")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Incident> getAllActiveAutorizado() {
+        List<Incident> incidents = new ArrayList<>();
+
+        for (Incident i:getAllIncidents()) {
+            if (i.getEstado().equals("Activo") && i.getReceptor().equals("personal_autorizado")) {
+                incidents.add(i);
+            }
+        }
+
+        return incidents;
+    }
+
+    @GetMapping("/getAllStopAutorizado")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Incident> getAllStopAutorizado() {
+        List<Incident> incidents = new ArrayList<>();
+
+        for (Incident i:getAllIncidents()) {
+            if (i.getEstado().equals("Pendiente") && i.getReceptor().equals("personal_autorizado")) {
+                incidents.add(i);
+            }
+        }
+
+        return incidents;
+    }
+
+    @GetMapping("/getAllCloseAutorizado")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Incident> getAllCloseAutorizado() {
+        List<Incident> incidents = new ArrayList<>();
+
+        for (Incident i:getAllIncidents()) {
+            if (i.getEstado().equals("Cerrado") && i.getReceptor().equals("personal_autorizado")) {
+                incidents.add(i);
+            }
+        }
+
+        return incidents;
     }
 
     @GetMapping("/getAllByUser/{creador}")
