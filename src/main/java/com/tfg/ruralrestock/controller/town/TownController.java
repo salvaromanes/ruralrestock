@@ -1,6 +1,5 @@
 package com.tfg.ruralrestock.controller.town;
 
-import com.tfg.ruralrestock.dbo.user.UserResponse;
 import com.tfg.ruralrestock.repository.town.TownRepository;
 import com.tfg.ruralrestock.dbo.town.TownResponse;
 import com.tfg.ruralrestock.dbo.town.TownRequest;
@@ -16,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
