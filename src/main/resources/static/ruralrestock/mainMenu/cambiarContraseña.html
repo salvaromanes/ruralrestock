@@ -49,12 +49,32 @@
                 <form id="request-form">
                     <div class="campos">
                         <div class="mb-3">
-                            <label for="municipio">
+                            <label for="antigua" style="margin-bottom: 4px;">
                                 <input
-                                        placeholder="Municipio *"
+                                        placeholder="Contraseña antigua *"
                                         type="text"
                                         class="form-control"
-                                        id="municipio"
+                                        id="antigua"
+                                        required
+                                />
+                            </label>
+                            <br>
+                            <label for="nueva" style="margin-bottom: 4px;">
+                                <input
+                                        placeholder="Contraseña nueva *"
+                                        type="text"
+                                        class="form-control"
+                                        id="nueva"
+                                        required
+                                />
+                            </label>
+                            <br>
+                            <label for="verifica" style="margin-bottom: 4px;">
+                                <input
+                                        placeholder="Repetir nueva *"
+                                        type="text"
+                                        class="form-control"
+                                        id="verifica"
                                         required
                                 />
                             </label>
@@ -62,7 +82,7 @@
                     </div>
 
                     <div class="boton">
-                        <input type="submit" class="btn btn-primary" value="Editar municipio">
+                        <input type="submit" class="btn btn-primary" value="Cambiar contraseña">
                         <a href="misDatos.html" class="btn btn-danger">Cancelar</a>
                     </div>
                 </form>
@@ -74,6 +94,6 @@
             integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
             crossorigin="anonymous"></script>
     <script type="text/javascript" src="../../javascript/viewsLogin.js"></script>
-    <script type="text/javascript" src="../../javascript/user/editarMisDatos.js"></script>
+    <script type="text/javascript" src="../../javascript/user/cambiarContraseña.js"></script>
     <script type="text/javascript" src="../../javascript/logout.js"></script>
 </html>

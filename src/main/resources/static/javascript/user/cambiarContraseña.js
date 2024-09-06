@@ -3,10 +3,12 @@ const modificarUsuario = async function (e) {
     e.preventDefault();
 
     const data = {
-        municipio: document.getElementById('municipio').value
+        password_antigua: await sha256(document.getElementById('antigua').value),
+        password_nueva: await sha256(document.getElementById('nueva').value),
+        password_nueva_verificacion: await sha256(document.getElementById('verifica').value)
     };
 
-    fetch("http://localhost:8080/api/user/update", {
+    fetch("http://localhost:8080/api/user/updatePassword", {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {

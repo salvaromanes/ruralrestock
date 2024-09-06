@@ -1,6 +1,7 @@
 package com.tfg.ruralrestock.controller.user;
 
 import com.tfg.ruralrestock.dbo.user.LoginRequest;
+import com.tfg.ruralrestock.dbo.user.PasswordChangeRequest;
 import com.tfg.ruralrestock.dbo.user.UserRequest;
 import com.tfg.ruralrestock.dbo.user.UserResponse;
 import com.tfg.ruralrestock.model.user.User;
@@ -161,10 +162,29 @@ public class LoginController {
         User user = userRepository.findByEmail(username).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         user.setMunicipio(userRequest.getMunicipio());
-        user.setPassword(userRequest.getPassword());
 
         userRepository.save(user);
         return mapToUserResponse(user);
+    }
+
+    @PostMapping("/updatePassword")
+    @ResponseStatus(HttpStatus.OK)
+    public UserResponse updatePassword(@RequestBody PasswordChangeRequest passwordChangeRequest, HttpSession httpSession) {
+        if (passwordChangeRequest.getPassword_nueva().equals(passwordChangeRequest.getPassword_nueva_verificacion())) {
+            String username = (String) httpSession.getAttribute("username");
+            User user = userRepository.findByEmail(username).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+            if (passwordChangeRequest.getPassword_antigua().equals(user.getPassword())) {
+                user.setPassword(passwordChangeRequest.getPassword_nueva());
+
+                userRepository.save(user);
+                return mapToUserResponse(user);
+            } else {
+                throw new RuntimeException("La antigua contraseña es incorrecta");
+            }
+        } else {
+            throw new RuntimeException("La nueva contraseña no coinciden");
+        }
     }
 
     @GetMapping("/blockUser/{dni}")
