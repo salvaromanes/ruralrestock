@@ -2,10 +2,7 @@ package com.tfg.ruralrestock.controller.chat;
 
 import com.tfg.ruralrestock.dbo.chat.ChatRequest;
 import com.tfg.ruralrestock.dbo.chat.ChatResponse;
-import com.tfg.ruralrestock.dbo.chat.CommentResponse;
-import com.tfg.ruralrestock.dbo.town.TownResponse;
 import com.tfg.ruralrestock.model.chat.Chat;
-import com.tfg.ruralrestock.model.chat.Comment;
 import com.tfg.ruralrestock.repository.chat.ChatRepository;
 
 import jakarta.servlet.http.HttpSession;

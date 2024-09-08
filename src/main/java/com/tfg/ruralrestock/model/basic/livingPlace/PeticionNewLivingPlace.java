@@ -21,4 +21,5 @@ public class PeticionNewLivingPlace {
     private String informacion;
     private String contacto;
     private String municipio;
+    private String creador;
 }

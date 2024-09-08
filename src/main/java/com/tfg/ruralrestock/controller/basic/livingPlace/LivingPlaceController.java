@@ -3,11 +3,13 @@ package com.tfg.ruralrestock.controller.basic.livingPlace;
 import com.tfg.ruralrestock.dbo.basic.livingPlace.LivingPlaceRequest;
 import com.tfg.ruralrestock.dbo.basic.livingPlace.LivingPlaceResponse;
 import com.tfg.ruralrestock.dbo.chat.ChatResponse;
+import com.tfg.ruralrestock.model.basic.event.PeticionNewEvent;
 import com.tfg.ruralrestock.model.basic.livingPlace.LivingPlace;
 import com.tfg.ruralrestock.model.basic.livingPlace.PeticionNewLivingPlace;
 import com.tfg.ruralrestock.repository.basic.livingPlace.LivingPlaceRepository;
 import com.tfg.ruralrestock.repository.basic.livingPlace.LivingPlacePeticionRepository;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -48,7 +51,7 @@ public class LivingPlaceController {
 
     @PostMapping("/createRequest")
     @ResponseStatus(HttpStatus.CREATED)
-    public PeticionNewLivingPlace createRequestLivingPlace(@RequestBody LivingPlaceRequest livingPlaceRequest) {
+    public PeticionNewLivingPlace createRequestLivingPlace(@RequestBody LivingPlaceRequest livingPlaceRequest, HttpSession httpSession) {
         PeticionNewLivingPlace livingPlace = PeticionNewLivingPlace.builder()
                 .propietario(livingPlaceRequest.getPropietario())
                 .direccion(livingPlaceRequest.getDireccion())
@@ -57,6 +60,7 @@ public class LivingPlaceController {
                 .informacion(livingPlaceRequest.getInformacion())
                 .contacto(livingPlaceRequest.getContacto())
                 .municipio(livingPlaceRequest.getMunicipio())
+                .creador((String) httpSession.getAttribute("username"))
                 .build();
 
         livingPlacePeticionRepository.insert(livingPlace);
@@ -77,11 +81,25 @@ public class LivingPlaceController {
         return livingPlacePeticionRepository.findAll();
     }
 
+    @GetMapping("/getAllMyRequest")
+    @ResponseStatus(HttpStatus.OK)
+    public List<PeticionNewLivingPlace> getAllMyPeticionEvents(HttpSession httpSession) {
+        return livingPlacePeticionRepository.findByCreador((String) httpSession.getAttribute("username"))
+                .orElse(new ArrayList<>());
+    }
+
     @DeleteMapping("/deleteById/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteLivingPlaceById(@PathVariable String id) {
         livingPlaceRepository.deleteById(id);
         log.info("Eliminada la oferta de vivienda: " + id);
+    }
+
+    @DeleteMapping("/deleteRequest/{direccion}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteLivingPlaceRequest(@PathVariable String direccion) {
+        livingPlacePeticionRepository.deleteById(direccion);
+        log.info("Eliminado la proposicion de oferta de vivienda: " + direccion);
     }
 
     @PostMapping("/createFromPeticion/{direccion}")

@@ -4,11 +4,13 @@ import com.tfg.ruralrestock.dbo.basic.event.EventPeticion;
 import com.tfg.ruralrestock.dbo.basic.event.EventRequest;
 import com.tfg.ruralrestock.dbo.basic.event.EventResponse;
 import com.tfg.ruralrestock.dbo.chat.ChatResponse;
+import com.tfg.ruralrestock.model.basic.employment.PeticionEmployment;
 import com.tfg.ruralrestock.model.basic.event.Event;
 import com.tfg.ruralrestock.model.basic.event.PeticionNewEvent;
 import com.tfg.ruralrestock.repository.basic.event.EventRepository;
 import com.tfg.ruralrestock.repository.basic.event.EventPeticionRepository;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -57,7 +60,7 @@ public class EventController {
 
     @PostMapping("/createRequest")
     @ResponseStatus(HttpStatus.CREATED)
-    public PeticionNewEvent createRequestEvent(@RequestBody EventPeticion eventPeticion) {
+    public PeticionNewEvent createRequestEvent(@RequestBody EventPeticion eventPeticion, HttpSession httpSession) {
         PeticionNewEvent newEvent = PeticionNewEvent.builder()
                 .nombre(eventPeticion.getNombre())
                 .tipo(eventPeticion.getTipo())
@@ -65,6 +68,7 @@ public class EventController {
                 .fechaFin(eventPeticion.getFechaFin())
                 .descripcion(eventPeticion.getDescripcion())
                 .municipio(eventPeticion.getMunicipio())
+                .creador((String) httpSession.getAttribute("username"))
                 .build();
 
         eventPeticionRepository.insert(newEvent);
@@ -83,6 +87,13 @@ public class EventController {
     @ResponseStatus(HttpStatus.OK)
     public List<PeticionNewEvent> getAllPeticionEvents() {
         return eventPeticionRepository.findAll();
+    }
+
+    @GetMapping("/getAllMyRequest")
+    @ResponseStatus(HttpStatus.OK)
+    public List<PeticionNewEvent> getAllMyPeticionEvents(HttpSession httpSession) {
+        return eventPeticionRepository.findByCreador((String) httpSession.getAttribute("username"))
+                .orElse(new ArrayList<>());
     }
 
     @DeleteMapping("/delete/{name}")

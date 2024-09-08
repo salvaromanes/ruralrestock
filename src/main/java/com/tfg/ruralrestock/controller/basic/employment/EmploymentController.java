@@ -2,13 +2,13 @@ package com.tfg.ruralrestock.controller.basic.employment;
 
 import com.tfg.ruralrestock.dbo.basic.employment.EmploymentRequest;
 import com.tfg.ruralrestock.dbo.basic.employment.EmploymentResponse;
-import com.tfg.ruralrestock.dbo.chat.ChatResponse;
 import com.tfg.ruralrestock.model.basic.employment.Employment;
 import com.tfg.ruralrestock.model.basic.employment.PeticionEmployment;
 import com.tfg.ruralrestock.repository.basic.company.CompanyRepository;
 import com.tfg.ruralrestock.repository.basic.employment.EmploymentPeticionRepository;
 import com.tfg.ruralrestock.repository.basic.employment.EmploymentRepository;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -53,7 +54,7 @@ public class EmploymentController {
 
     @PostMapping("/createRequest")
     @ResponseStatus(HttpStatus.CREATED)
-    public PeticionEmployment createEmploymentRequest(@RequestBody EmploymentRequest employmentRequest) {
+    public PeticionEmployment createEmploymentRequest(@RequestBody EmploymentRequest employmentRequest, HttpSession httpSession) {
         if (companyRepository.findByName(employmentRequest.getEmpresa_ofertante()).isPresent()) {
             if (employmentRequest.getUrl().isEmpty()) {
                 employmentRequest.setUrl("#");
@@ -66,6 +67,7 @@ public class EmploymentController {
                     .informacion_extra(employmentRequest.getInformacion_extra())
                     .empresa_ofertante(employmentRequest.getEmpresa_ofertante())
                     .url(employmentRequest.getUrl())
+                    .creador((String) httpSession.getAttribute("username"))
                     .build();
 
             employmentPeticionRepository.insert(employment);
@@ -89,11 +91,25 @@ public class EmploymentController {
         return employmentPeticionRepository.findAll();
     }
 
+    @GetMapping("/getAllMyRequest")
+    @ResponseStatus(HttpStatus.OK)
+    public List<PeticionEmployment> getAllMyEmploymentRequest(HttpSession httpSession) {
+        return employmentPeticionRepository.findByCreador((String) httpSession.getAttribute("username"))
+                .orElse(new ArrayList<>());
+    }
+
     @DeleteMapping("/delete/{nombre}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteEmployment(@PathVariable String nombre) {
         employmentRepository.deleteById(nombre);
         log.info("Eliminado la oferta de empleo: " + nombre);
+    }
+
+    @DeleteMapping("/deleteRequest/{nombre}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteEmploymentRequest(@PathVariable String nombre) {
+        employmentPeticionRepository.deleteById(nombre);
+        log.info("Eliminado la proposicion de oferta de empleo: " + nombre);
     }
 
     @PostMapping("/createFromPeticion/{nombre}")

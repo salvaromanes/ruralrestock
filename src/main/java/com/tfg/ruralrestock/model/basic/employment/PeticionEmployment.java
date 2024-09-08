@@ -19,4 +19,5 @@ public class PeticionEmployment {
     private String informacion_extra;
     private String empresa_ofertante;
     private String url;
+    private String creador;
 }

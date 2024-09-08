@@ -20,4 +20,5 @@ public class PeticionNewEvent {
     private String fechaFin;
     private String descripcion;
     private String municipio;
+    private String creador;
 }
