@@ -96,6 +96,19 @@ public class TownController {
         return new ResponseEntity<>(csvBytes, headers, HttpStatus.OK);
     }
 
+    @PostMapping("/update")
+    @ResponseStatus(HttpStatus.CREATED)
+    public TownResponse updateTown(@RequestBody TownRequest townRequest) {
+        Town townFound = townRepository.findById(townRequest.getNombre())
+                .orElseThrow(() -> new RuntimeException("Municipio no encontrado"));
+
+        townFound.setHistoria(townRequest.getHistoria());
+
+        townRepository.save(townFound);
+        log.info("El municipio ha sido actualizado con exito");
+        return mapToTownResponse(townFound);
+    }
+
     private TownResponse mapToTownResponse(Town town) {
         return TownResponse.builder()
                 .nombre(town.getNombre())

@@ -85,6 +85,22 @@ public class CompanyController {
         return new ResponseEntity<>(csvBytes, headers, HttpStatus.OK);
     }
 
+    @PostMapping("/update")
+    @ResponseStatus(HttpStatus.CREATED)
+    public CompanyResponse updateCompany(@RequestBody CompanyRequest companyRequest) {
+        Company companyFound = companyRepository.findById(companyRequest.getCif())
+                .orElseThrow(() -> new RuntimeException("No se ha encontrado la empresa"));
+
+        companyFound.setPropietario(companyRequest.getPropietario());
+        companyFound.setDireccion(companyRequest.getDireccion());
+        companyFound.setDescripcion(companyRequest.getDescripcion());
+        companyFound.setMunicipio(companyRequest.getMunicipio());
+
+        companyRepository.save(companyFound);
+        log.info("Empresa actualizada correctamente");
+        return mapToCompanyResponse(companyFound);
+    }
+
     private CompanyResponse mapToCompanyResponse(Company company) {
         return CompanyResponse.builder()
                 .cif(company.getCif())
