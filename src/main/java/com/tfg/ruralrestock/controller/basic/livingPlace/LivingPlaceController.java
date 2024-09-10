@@ -155,6 +155,22 @@ public class LivingPlaceController {
         return new ResponseEntity<>(csvBytes, headers, HttpStatus.OK);
     }
 
+    @PostMapping("/update")
+    @ResponseStatus(HttpStatus.CREATED)
+    public PeticionNewLivingPlace updateLivingPlace(@RequestBody LivingPlaceRequest livingPlaceRequest) {
+        PeticionNewLivingPlace livingPlace = livingPlacePeticionRepository.findById(livingPlaceRequest.getDireccion())
+                .orElseThrow(() -> new RuntimeException("Vivienda no encontrada"));
+
+        livingPlace.setTipo(livingPlaceRequest.getTipo());
+        livingPlace.setPrecio(livingPlaceRequest.getPrecio());
+        livingPlace.setInformacion(livingPlaceRequest.getInformacion());
+        livingPlace.setContacto(livingPlaceRequest.getContacto());
+
+        livingPlacePeticionRepository.save(livingPlace);
+        log.info("Propuesta de vivienda acualizada con exito");
+        return livingPlace;
+    }
+
     private LivingPlaceResponse mapToLivingPlaceResponse(LivingPlace livingPlace) {
         return LivingPlaceResponse.builder()
                 .propietario(livingPlace.getPropietario())

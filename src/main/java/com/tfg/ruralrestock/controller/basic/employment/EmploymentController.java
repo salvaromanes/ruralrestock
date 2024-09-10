@@ -159,6 +159,22 @@ public class EmploymentController {
         return new ResponseEntity<>(csvBytes, headers, HttpStatus.OK);
     }
 
+    @PostMapping("/update")
+    @ResponseStatus(HttpStatus.CREATED)
+    public PeticionEmployment updateEmployment(@RequestBody EmploymentRequest employmentRequest) {
+        PeticionEmployment employmentFound = employmentPeticionRepository.findById(employmentRequest.getNombre())
+                .orElseThrow(() -> new RuntimeException(""));
+
+        employmentFound.setRequisitos(employmentRequest.getRequisitos());
+        employmentFound.setDescripcion(employmentRequest.getDescripcion());
+        employmentFound.setInformacion_extra(employmentRequest.getInformacion_extra());
+        employmentFound.setUrl(employmentRequest.getUrl());
+
+        employmentPeticionRepository.save(employmentFound);
+        log.info("Propuesta de empleo actualizada");
+        return employmentFound;
+    }
+
     private EmploymentResponse mapToEmploymentRespone(Employment employment) {
         return EmploymentResponse.builder()
                 .nombre(employment.getNombre())

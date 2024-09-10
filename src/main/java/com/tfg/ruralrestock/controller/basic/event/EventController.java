@@ -161,6 +161,19 @@ public class EventController {
         return new ResponseEntity<>(csvBytes, headers, HttpStatus.OK);
     }
 
+    @PostMapping("/update")
+    @ResponseStatus(HttpStatus.CREATED)
+    public PeticionNewEvent updateEvent(@RequestBody EventRequest eventRequest) {
+        PeticionNewEvent eventFound = eventPeticionRepository.findById(eventRequest.getNombre())
+                .orElseThrow(() -> new RuntimeException("Evento no encontrado"));
+
+        eventFound.setDescripcion(eventRequest.getDescripcion());
+
+        eventPeticionRepository.save(eventFound);
+        log.info("Evento actualizado");
+        return eventFound;
+    }
+
     private EventResponse mapToEventResponse(Event event) {
         return EventResponse.builder()
                 .nombre(event.getNombre())
