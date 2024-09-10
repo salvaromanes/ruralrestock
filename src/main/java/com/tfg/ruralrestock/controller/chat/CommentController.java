@@ -106,6 +106,19 @@ public class CommentController {
         return new ResponseEntity<>(csvBytes, headers, HttpStatus.OK);
     }
 
+    @PostMapping("/update")
+    @ResponseStatus(HttpStatus.CREATED)
+    public CommentResponse updateComment(@RequestBody CommentRequest commentRequest, HttpSession session) {
+        Comment commentFound = commentRepository.findById(commentRequest.getTema())
+                .orElseThrow(() -> new RuntimeException("Comentario no encontrado"));
+
+        commentFound.setDescripcion(commentRequest.getDescripcion());
+
+        commentRepository.save(commentFound);
+        log.info("Comentario actualizado");
+        return mapToCommentResponse(commentFound);
+    }
+
     private CommentResponse mapToCommentResponse(Comment comment) {
         return CommentResponse.builder()
                 .autor(comment.getAutor())
