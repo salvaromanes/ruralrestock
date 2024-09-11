@@ -38,6 +38,10 @@ public class LoginController {
         User userFound = userRepository.findById(userRequest.getDni()).orElse(null);
 
         if(userFound == null) {
+            if (userRequest.getDni().length() < 9) {
+                throw new RuntimeException("DNI no valido");
+            }
+
             int numeroDNI = Integer.parseInt(userRequest.getDni().substring(0, 8));
             int controlDNI = numeroDNI%23;
             String letraDNI = String.valueOf(userRequest.getDni().charAt(8)).toUpperCase();
