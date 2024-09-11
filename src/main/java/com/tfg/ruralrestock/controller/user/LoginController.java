@@ -29,6 +29,8 @@ import java.util.List;
 @Slf4j
 public class LoginController {
     private final UserRepository userRepository;
+    private final List<String> letrasDNI =
+            List.of("T", "R", "W", "A", "G", "M", "Y", "F", "P", "D", "X", "B", "N", "J", "Z", "S", "Q", "V", "H", "L", "C", "K", "E");
 
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
@@ -36,6 +38,15 @@ public class LoginController {
         User userFound = userRepository.findById(userRequest.getDni()).orElse(null);
 
         if(userFound == null) {
+            int numeroDNI = Integer.parseInt(userRequest.getDni().substring(0, 8));
+            int controlDNI = numeroDNI%23;
+            String letraDNI = String.valueOf(userRequest.getDni().charAt(8)).toUpperCase();
+            String letraControl = letrasDNI.get(controlDNI);
+
+            if (!letraControl.equals(letraDNI)) {
+                throw new RuntimeException("DNI no valido");
+            }
+
             User user = User.builder()
                     .dni(userRequest.getDni())
                     .nombre(userRequest.getNombre())

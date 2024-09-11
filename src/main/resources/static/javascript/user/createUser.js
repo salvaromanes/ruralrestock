@@ -19,6 +19,7 @@ const crearUsuario = async function (e) {
         }
     }).then(res => {
         if (res.status == 201) {
+            location.reload();
             alert("Usuario creado correctamente");
         } else {
             alert("Error al crear el usuario");
