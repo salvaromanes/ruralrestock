@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -12,8 +14,8 @@ import lombok.NoArgsConstructor;
 public class EventPeticion {
     private String nombre;
     private String tipo;
-    private String fechaInicio;
-    private String fechaFin;
+    private Date fechaInicio;
+    private Date fechaFin;
     private String descripcion;
     private String municipio;
 }

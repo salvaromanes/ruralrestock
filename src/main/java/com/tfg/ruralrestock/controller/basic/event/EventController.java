@@ -3,8 +3,6 @@ package com.tfg.ruralrestock.controller.basic.event;
 import com.tfg.ruralrestock.dbo.basic.event.EventPeticion;
 import com.tfg.ruralrestock.dbo.basic.event.EventRequest;
 import com.tfg.ruralrestock.dbo.basic.event.EventResponse;
-import com.tfg.ruralrestock.dbo.chat.ChatResponse;
-import com.tfg.ruralrestock.model.basic.employment.PeticionEmployment;
 import com.tfg.ruralrestock.model.basic.event.Event;
 import com.tfg.ruralrestock.model.basic.event.PeticionNewEvent;
 import com.tfg.ruralrestock.repository.basic.event.EventRepository;
@@ -20,10 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.charset.StandardCharsets;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -37,16 +33,11 @@ public class EventController {
 
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
-    public EventResponse createEvent(@RequestBody EventRequest eventRequest) throws ParseException {
-        SimpleDateFormat parser = new SimpleDateFormat("yyyy-MM-dd");
-        Date fecha_inicio = parser.parse(eventRequest.getFecha_inicio());
-        Date fecha_fin = parser.parse(eventRequest.getFecha_fin());
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-
+    public EventResponse createEvent(@RequestBody EventRequest eventRequest) {
         Event event = Event.builder()
                 .nombre(eventRequest.getNombre())
-                .fecha_inicio(formatter.format(fecha_inicio))
-                .fecha_fin(formatter.format(fecha_fin))
+                .fecha_inicio(eventRequest.getFecha_inicio())
+                .fecha_fin(eventRequest.getFecha_fin())
                 .tipo(eventRequest.getTipo())
                 .descripcion(eventRequest.getDescripcion())
                 .municipio(eventRequest.getMunicipio())
@@ -64,8 +55,14 @@ public class EventController {
         PeticionNewEvent newEvent = PeticionNewEvent.builder()
                 .nombre(eventPeticion.getNombre())
                 .tipo(eventPeticion.getTipo())
-                .fechaInicio(eventPeticion.getFechaInicio())
-                .fechaFin(eventPeticion.getFechaFin())
+                .fechaInicio(eventPeticion.getFechaInicio().getDate()+"/"+
+                                eventPeticion.getFechaInicio().getMonth()+"/"+
+                                eventPeticion.getFechaInicio().getYear()
+                            )
+                .fechaFin(eventPeticion.getFechaFin().getDate()+"/"+
+                            eventPeticion.getFechaFin().getMonth()+"/"+
+                            eventPeticion.getFechaFin().getYear()
+                )
                 .descripcion(eventPeticion.getDescripcion())
                 .municipio(eventPeticion.getMunicipio())
                 .creador((String) httpSession.getAttribute("username"))
