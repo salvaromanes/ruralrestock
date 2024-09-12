@@ -91,10 +91,21 @@ public class CompanyController {
         Company companyFound = companyRepository.findById(companyRequest.getCif())
                 .orElseThrow(() -> new RuntimeException("No se ha encontrado la empresa"));
 
-        companyFound.setPropietario(companyRequest.getPropietario());
-        companyFound.setDireccion(companyRequest.getDireccion());
-        companyFound.setDescripcion(companyRequest.getDescripcion());
-        companyFound.setMunicipio(companyRequest.getMunicipio());
+        if (!companyRequest.getPropietario().isEmpty()) {
+            companyFound.setPropietario(companyRequest.getPropietario());
+        }
+
+        if (!companyRequest.getDireccion().isEmpty()) {
+            companyFound.setDireccion(companyRequest.getDireccion());
+        }
+
+        if (!companyRequest.getDescripcion().isEmpty()) {
+            companyFound.setDescripcion(companyRequest.getDescripcion());
+        }
+
+        if (!companyRequest.getMunicipio().isEmpty()) {
+            companyFound.setMunicipio(companyRequest.getMunicipio());
+        }
 
         companyRepository.save(companyFound);
         log.info("Empresa actualizada correctamente");

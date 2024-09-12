@@ -4,7 +4,17 @@ import com.tfg.ruralrestock.dbo.user.LoginRequest;
 import com.tfg.ruralrestock.dbo.user.PasswordChangeRequest;
 import com.tfg.ruralrestock.dbo.user.UserRequest;
 import com.tfg.ruralrestock.dbo.user.UserResponse;
+import com.tfg.ruralrestock.model.basic.employment.PeticionEmployment;
+import com.tfg.ruralrestock.model.basic.event.PeticionNewEvent;
+import com.tfg.ruralrestock.model.basic.livingPlace.PeticionNewLivingPlace;
+import com.tfg.ruralrestock.model.chat.Chat;
+import com.tfg.ruralrestock.model.chat.Comment;
 import com.tfg.ruralrestock.model.user.User;
+import com.tfg.ruralrestock.repository.basic.employment.EmploymentPeticionRepository;
+import com.tfg.ruralrestock.repository.basic.event.EventPeticionRepository;
+import com.tfg.ruralrestock.repository.basic.livingPlace.LivingPlacePeticionRepository;
+import com.tfg.ruralrestock.repository.chat.ChatRepository;
+import com.tfg.ruralrestock.repository.chat.CommentRepository;
 import com.tfg.ruralrestock.repository.user.UserRepository;
 
 import jakarta.servlet.http.HttpSession;
@@ -29,6 +39,12 @@ import java.util.List;
 @Slf4j
 public class LoginController {
     private final UserRepository userRepository;
+    private final EmploymentPeticionRepository employmentPeticionRepository;
+    private final EventPeticionRepository eventPeticionRepository;
+    private final LivingPlacePeticionRepository livingPlacePeticionRepository;
+    private final CommentRepository commentRepository;
+    private final ChatRepository chatRepository;
+
     private final List<String> letrasDNI =
             List.of("T", "R", "W", "A", "G", "M", "Y", "F", "P", "D", "X", "B", "N", "J", "Z", "S", "Q", "V", "H", "L", "C", "K", "E");
 
@@ -226,6 +242,41 @@ public class LoginController {
         User user = userRepository.findByEmail(username).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         user.setDadoBaja(Boolean.TRUE);
+
+        List<PeticionEmployment> peticionEmployments = employmentPeticionRepository.findByCreador(username)
+                .orElse(new ArrayList<>());
+
+        for (PeticionEmployment p:peticionEmployments) {
+            employmentPeticionRepository.delete(p);
+        }
+
+        List<PeticionNewEvent> eventPeticionRepositories = eventPeticionRepository.findByCreador(username)
+                .orElse(new ArrayList<>());
+
+        for (PeticionNewEvent p:eventPeticionRepositories) {
+            eventPeticionRepository.delete(p);
+        }
+
+        List<PeticionNewLivingPlace> peticionNewLivingPlaces = livingPlacePeticionRepository.findByCreador(username)
+                .orElse(new ArrayList<>());
+
+        for (PeticionNewLivingPlace p:peticionNewLivingPlaces) {
+            livingPlacePeticionRepository.delete(p);
+        }
+
+        List<Comment> comments = commentRepository.findByCreador(username)
+                .orElse(new ArrayList<>());
+
+        for (Comment c:comments) {
+            commentRepository.delete(c);
+        }
+
+        List<Chat> chats = chatRepository.findByCreador(username)
+                .orElse(new ArrayList<>());
+
+        for (Chat c:chats) {
+            chatRepository.delete(c);
+        }
 
         userRepository.save(user);
     }

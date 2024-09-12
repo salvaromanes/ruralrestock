@@ -161,10 +161,19 @@ public class LivingPlaceController {
         PeticionNewLivingPlace livingPlace = livingPlacePeticionRepository.findById(livingPlaceRequest.getDireccion())
                 .orElseThrow(() -> new RuntimeException("Vivienda no encontrada"));
 
-        livingPlace.setTipo(livingPlaceRequest.getTipo());
+        if (!livingPlaceRequest.getTipo().isEmpty()) {
+            livingPlace.setTipo(livingPlaceRequest.getTipo());
+        }
+
         livingPlace.setPrecio(livingPlaceRequest.getPrecio());
-        livingPlace.setInformacion(livingPlaceRequest.getInformacion());
-        livingPlace.setContacto(livingPlaceRequest.getContacto());
+
+        if (!livingPlaceRequest.getInformacion().isEmpty()) {
+            livingPlace.setInformacion(livingPlaceRequest.getInformacion());
+        }
+
+        if (!livingPlaceRequest.getContacto().isEmpty()) {
+            livingPlace.setContacto(livingPlaceRequest.getContacto());
+        }
 
         livingPlacePeticionRepository.save(livingPlace);
         log.info("Propuesta de vivienda acualizada con exito");

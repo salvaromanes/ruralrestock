@@ -165,10 +165,21 @@ public class EmploymentController {
         PeticionEmployment employmentFound = employmentPeticionRepository.findById(employmentRequest.getNombre())
                 .orElseThrow(() -> new RuntimeException(""));
 
-        employmentFound.setRequisitos(employmentRequest.getRequisitos());
-        employmentFound.setDescripcion(employmentRequest.getDescripcion());
-        employmentFound.setInformacion_extra(employmentRequest.getInformacion_extra());
-        employmentFound.setUrl(employmentRequest.getUrl());
+        if (!employmentRequest.getRequisitos().isEmpty()) {
+            employmentFound.setRequisitos(employmentRequest.getRequisitos());
+        }
+
+        if (!employmentRequest.getDescripcion().isEmpty()) {
+            employmentFound.setDescripcion(employmentRequest.getDescripcion());
+        }
+
+        if (!employmentRequest.getInformacion_extra().isEmpty()) {
+            employmentFound.setInformacion_extra(employmentRequest.getInformacion_extra());
+        }
+
+        if (!employmentRequest.getUrl().isEmpty()) {
+            employmentFound.setUrl(employmentRequest.getUrl());
+        }
 
         employmentPeticionRepository.save(employmentFound);
         log.info("Propuesta de empleo actualizada");
