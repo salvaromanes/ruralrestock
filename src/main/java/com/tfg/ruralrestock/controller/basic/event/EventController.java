@@ -56,12 +56,12 @@ public class EventController {
                 .nombre(eventPeticion.getNombre())
                 .tipo(eventPeticion.getTipo())
                 .fechaInicio(eventPeticion.getFechaInicio().getDate()+"/"+
-                                eventPeticion.getFechaInicio().getMonth()+"/"+
-                                eventPeticion.getFechaInicio().getYear()
+                                (eventPeticion.getFechaInicio().getMonth()+1)+"/"+
+                                (eventPeticion.getFechaInicio().getYear()+1900)
                             )
                 .fechaFin(eventPeticion.getFechaFin().getDate()+"/"+
-                            eventPeticion.getFechaFin().getMonth()+"/"+
-                            eventPeticion.getFechaFin().getYear()
+                            (eventPeticion.getFechaFin().getMonth()+1)+"/"+
+                            (eventPeticion.getFechaFin().getYear()+1900)
                 )
                 .descripcion(eventPeticion.getDescripcion())
                 .municipio(eventPeticion.getMunicipio())
