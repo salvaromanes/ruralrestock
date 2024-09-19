@@ -142,7 +142,7 @@ public class LoginController {
         List<User> actives = new ArrayList<>();
 
         for (User u:users) {
-            if (!u.getBloqueado()) {
+            if (!u.getBloqueado() && !u.getDadoBaja()) {
                 actives.add(u);
             }
         }
