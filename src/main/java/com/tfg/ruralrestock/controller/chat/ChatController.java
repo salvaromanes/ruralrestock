@@ -68,7 +68,11 @@ public class ChatController {
 
         Chat chatFound = chatRepository.findById(key).orElseThrow(() -> new RuntimeException("Chat no encontrado"));
 
-        if (chatFound.getInteresados().contains((String) session.getAttribute("username"))) {
+        String usuario = (String) session.getAttribute("username");
+
+        if (chatFound.getAutor().equals(usuario)) {
+            return "El usuario creador no se puede inscribir";
+        } else if (chatFound.getInteresados().contains(usuario)) {
             updateMoreSeats(key, session);
             return "Plazas incrementadas";
         } else {

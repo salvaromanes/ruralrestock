@@ -17,7 +17,7 @@ const crearIncidente = async function (e){
         }
     }).then(res => {
         if (res.status == 201) {
-            window.location.href='misIncidentes.html';
+            window.location.href='misIncidencias.html';
             alert("Incidencia creada correctamente");
         } else {
             alert("Error al crear la incidencia");

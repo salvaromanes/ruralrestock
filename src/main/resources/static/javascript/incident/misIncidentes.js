@@ -44,6 +44,7 @@ function mapearComentario(comentario){
                 <td>${comentario.tipo}</td>
                 <td>${comentario.descripcion}</td>
                 <td>${comentario.municipio}</td>
+                <td>${comentario.estado}</td>
             </tr>`;
 }
 
